@@ -29,4 +29,9 @@ public class MovieRepository {
     public List<Movie> discover() throws TMDbException {
         return movieNetworkDataSource.discover();
     }
+
+    @NonNull
+    public List<Movie> popular() throws TMDbException {
+        return movieNetworkDataSource.popular();
+    }
 }
