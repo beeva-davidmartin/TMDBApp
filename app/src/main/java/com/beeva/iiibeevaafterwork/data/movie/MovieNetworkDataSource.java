@@ -13,6 +13,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Pair;
 
 import com.beeva.iiibeevaafterwork.data.Constants;
 import com.beeva.iiibeevaafterwork.data.network.NetworkHelper;
@@ -29,6 +30,8 @@ public class MovieNetworkDataSource {
     private static final String DISCOVER_URL = "/discover/movie";
 
     private static final String POPULAR_URL = "/movie/popular";
+
+    private static final String DETAIL_URL = "/movie/{movie_id}";
 
     private final NetworkHelper networkHelper;
 
@@ -104,8 +107,37 @@ public class MovieNetworkDataSource {
     }
 
     @NonNull
+    public Movie getDetail(@NonNull Integer id) throws TMDbException {
+        String url = urlFromEndpoint(DETAIL_URL, Pair.create("{movie_id}", id.toString()));
+
+        Operation operation = Operation.newGet(url);
+        JSONObject object;
+        try {
+            object = networkHelper.request(operation);
+        } catch (Exception e) {
+            throw new TMDbException(TMDbException.Type.NETWORK, e);
+        }
+
+        try {
+            return parseMovie(object);
+        } catch (JSONException e) {
+            throw new TMDbException(TMDbException.Type.API, e);
+        }
+    }
+
+    @NonNull
     private String urlFromEndpoint(String endpoint) {
         return Constants.BASE_API_URL + endpoint;
+    }
+
+    @SafeVarargs
+    @NonNull
+    private final String urlFromEndpoint(String endpoint, Pair<String, String>... parameters) {
+        String url = urlFromEndpoint(endpoint);
+        for (Pair<String, String> parameter : parameters) {
+            url = url.replace(parameter.first, parameter.second);
+        }
+        return url;
     }
 
     @NonNull

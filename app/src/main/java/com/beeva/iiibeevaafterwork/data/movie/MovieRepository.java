@@ -34,4 +34,9 @@ public class MovieRepository {
     public List<Movie> getPopular() throws TMDbException {
         return movieNetworkDataSource.getPopular();
     }
+
+    @NonNull
+    public Movie getDetail(@NonNull Integer id) throws TMDbException {
+        return movieNetworkDataSource.getDetail(id);
+    }
 }
