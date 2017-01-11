@@ -8,7 +8,7 @@ public class TvEpisode {
     public final Integer id;
 
     @NonNull
-    public final String title;
+    public final String name;
 
     @NonNull
     public final String description;
@@ -17,11 +17,11 @@ public class TvEpisode {
     public final Double rating;
 
     public TvEpisode(@NonNull Integer id,
-                     @NonNull String title,
+                     @NonNull String name,
                      @NonNull String description,
                      @NonNull Double rating) {
         this.id = id;
-        this.title = title;
+        this.name = name;
         this.description = description;
         this.rating = rating;
     }

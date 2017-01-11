@@ -1,4 +1,4 @@
-package com.beeva.iiibeevaafterwork.data.movie;
+package com.beeva.iiibeevaafterwork.data.tvshow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,32 +19,32 @@ import com.beeva.iiibeevaafterwork.data.Constants;
 import com.beeva.iiibeevaafterwork.data.network.NetworkHelper;
 import com.beeva.iiibeevaafterwork.data.network.Operation;
 import com.beeva.iiibeevaafterwork.domain.TMDbException;
-import com.beeva.iiibeevaafterwork.domain.model.Movie;
+import com.beeva.iiibeevaafterwork.domain.model.TvShow;
 
-public class MovieNetworkDataSource {
+public class TvShowNetworkDataSource {
 
-    private static final String LOG_TAG = MovieNetworkDataSource.class.getSimpleName();
+    private static final String LOG_TAG = TvShowNetworkDataSource.class.getSimpleName();
 
-    private static final String SEARCH_URL = "/search/movie";
+    private static final String SEARCH_URL = "/search/tv";
 
-    private static final String DISCOVER_URL = "/discover/movie";
+    private static final String DISCOVER_URL = "/discover/tv";
 
-    private static final String POPULAR_URL = "/movie/popular";
+    private static final String POPULAR_URL = "/tv/popular";
 
-    private static final String DETAIL_URL = "/movie/{movie_id}";
+    private static final String DETAIL_URL = "/tv/{tv_id}";
 
     private final NetworkHelper networkHelper;
 
-    public MovieNetworkDataSource(@NonNull Context context) {
+    public TvShowNetworkDataSource(@NonNull Context context) {
         this(NetworkHelper.get(context));
     }
 
-    MovieNetworkDataSource(NetworkHelper networkHelper) {
+    TvShowNetworkDataSource(NetworkHelper networkHelper) {
         this.networkHelper = networkHelper;
     }
 
     @NonNull
-    public List<Movie> search(@NonNull final String query) throws TMDbException {
+    public List<TvShow> search(@NonNull final String query) throws TMDbException {
         String url = urlFromEndpoint(SEARCH_URL);
         Map<String, String> queryParams = new HashMap<String, String>() {{
             put("query", Uri.encode(query));
@@ -63,11 +63,11 @@ public class MovieNetworkDataSource {
             throw new TMDbException(TMDbException.Type.API);
         }
 
-        return parseMovies(results);
+        return parseTvShows(results);
     }
 
     @NonNull
-    public List<Movie> discover() throws TMDbException {
+    public List<TvShow> discover() throws TMDbException {
         String url = urlFromEndpoint(DISCOVER_URL);
 
         Operation operation = Operation.newGet(url);
@@ -83,11 +83,11 @@ public class MovieNetworkDataSource {
             throw new TMDbException(TMDbException.Type.API);
         }
 
-        return parseMovies(results);
+        return parseTvShows(results);
     }
 
     @NonNull
-    public List<Movie> getPopular() throws TMDbException {
+    public List<TvShow> getPopular() throws TMDbException {
         String url = urlFromEndpoint(POPULAR_URL);
 
         Operation operation = Operation.newGet(url);
@@ -103,12 +103,12 @@ public class MovieNetworkDataSource {
             throw new TMDbException(TMDbException.Type.API);
         }
 
-        return parseMovies(results);
+        return parseTvShows(results);
     }
 
     @NonNull
-    public Movie getDetail(@NonNull Integer id) throws TMDbException {
-        String url = urlFromEndpoint(DETAIL_URL, Pair.create("{movie_id}", id.toString()));
+    public TvShow getDetail(@NonNull Integer id) throws TMDbException {
+        String url = urlFromEndpoint(DETAIL_URL, Pair.create("{tv_id}", id.toString()));
 
         Operation operation = Operation.newGet(url);
         JSONObject object;
@@ -119,7 +119,7 @@ public class MovieNetworkDataSource {
         }
 
         try {
-            return parseMovie(object);
+            return parseTvShow(object);
         } catch (JSONException e) {
             throw new TMDbException(TMDbException.Type.API, e);
         }
@@ -141,25 +141,55 @@ public class MovieNetworkDataSource {
     }
 
     @NonNull
-    private ArrayList<Movie> parseMovies(JSONArray results) {
-        ArrayList<Movie> movies = new ArrayList<>();
+    private ArrayList<TvShow> parseTvShows(JSONArray results) {
+        ArrayList<TvShow> tvShows = new ArrayList<>();
         for (int index = 0; index < results.length(); index++) {
             try {
-                JSONObject movieObject = results.getJSONObject(index);
-                movies.add(parseMovie(movieObject));
+                JSONObject tvShowObject = results.getJSONObject(index);
+                tvShows.add(parseTvShow(tvShowObject));
             } catch (JSONException exception) {
-                Log.w(LOG_TAG, "Failed parsing movie #" + index, exception);
+                Log.w(LOG_TAG, "Failed parsing TV show #" + index, exception);
             }
         }
-        return movies;
+        return tvShows;
     }
 
     @NonNull
-    private Movie parseMovie(JSONObject movieObject) throws JSONException {
-        return new Movie(movieObject.getInt("id"),
-                movieObject.getString("title"),
-                movieObject.getString("overview"),
-                movieObject.getString("poster_path"),
-                movieObject.getDouble("vote_average"));
+    private TvShow parseTvShow(JSONObject tvShowObject) throws JSONException {
+        JSONArray seasonsArray = tvShowObject.optJSONArray("seasons");
+        List<TvShow.Season> seasons;
+        if (seasonsArray != null) {
+            seasons = parseTvShowSeasons(seasonsArray);
+        } else {
+            seasons = null;
+        }
+
+        return new TvShow(tvShowObject.getInt("id"),
+                tvShowObject.getString("name"),
+                tvShowObject.getString("overview"),
+                tvShowObject.getString("poster_path"),
+                tvShowObject.getDouble("vote_average"),
+                seasons);
+    }
+
+    @NonNull
+    private List<TvShow.Season> parseTvShowSeasons(JSONArray seasonsArray) throws JSONException {
+        ArrayList<TvShow.Season> seasons = new ArrayList<>();
+        for (int index = 0; index < seasonsArray.length(); index++) {
+            try {
+                JSONObject seasonObject = seasonsArray.getJSONObject(index);
+                seasons.add(parseTvShowSeason(seasonObject));
+            } catch (JSONException exception) {
+                Log.w(LOG_TAG, "Failed parsing TV show #" + index, exception);
+            }
+        }
+        return seasons;
+    }
+
+    private TvShow.Season parseTvShowSeason(JSONObject seasonObject) throws JSONException {
+        return new TvShow.Season(seasonObject.getInt("id"),
+                seasonObject.getInt("season_number"),
+                seasonObject.getInt("episode_count"),
+                seasonObject.getString("poster_path"));
     }
 }

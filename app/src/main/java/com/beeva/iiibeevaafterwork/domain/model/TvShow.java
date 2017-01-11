@@ -3,6 +3,7 @@ package com.beeva.iiibeevaafterwork.domain.model;
 import java.util.List;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TvShow {
 
@@ -21,6 +22,7 @@ public class TvShow {
     @NonNull
     public final Double rating;
 
+    @Nullable
     public final List<Season> seasons;
 
     public TvShow(@NonNull Integer id,
@@ -28,7 +30,7 @@ public class TvShow {
                   @NonNull String description,
                   @NonNull String poster,
                   @NonNull Double rating,
-                  @NonNull List<Season> seasons) {
+                  @Nullable List<Season> seasons) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,12 +51,12 @@ public class TvShow {
         public final Integer numOfEpisodies;
 
         @NonNull
-        public final Integer poster;
+        public final String poster;
 
         public Season(@NonNull Integer id,
                       @NonNull Integer seasonNumber,
                       @NonNull Integer numOfEpisodies,
-                      @NonNull Integer poster) {
+                      @NonNull String poster) {
             this.id = id;
             this.seasonNumber = seasonNumber;
             this.numOfEpisodies = numOfEpisodies;
