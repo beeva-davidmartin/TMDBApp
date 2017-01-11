@@ -26,6 +26,8 @@ public class MovieNetworkDataSource {
 
     private static final String SEARCH_URL = "/search/movie";
 
+    private static final String DISCOVER_URL = "/discover/movie";
+
     private final NetworkHelper networkHelper;
 
     public MovieNetworkDataSource(@NonNull Context context) {
@@ -38,13 +40,13 @@ public class MovieNetworkDataSource {
 
     @NonNull
     public List<Movie> search(@NonNull final String query) throws TMDbException {
-        String url = Constants.BASE_API_URL + SEARCH_URL;
+        String url = urlFromEndpoint(SEARCH_URL);
         Map<String, String> queryParams = new HashMap<String, String>() {{
             put("query", Uri.encode(query));
         }};
 
         Operation operation = Operation.newGet(url, queryParams);
-        JSONObject object = null;
+        JSONObject object;
         try {
             object = networkHelper.request(operation);
         } catch (Exception e) {
@@ -57,6 +59,31 @@ public class MovieNetworkDataSource {
         }
 
         return parseMovies(results);
+    }
+
+    @NonNull
+    public List<Movie> discover() throws TMDbException {
+        String url = urlFromEndpoint(DISCOVER_URL);
+
+        Operation operation = Operation.newGet(url);
+        JSONObject object;
+        try {
+            object = networkHelper.request(operation);
+        } catch (Exception e) {
+            throw new TMDbException(TMDbException.Type.NETWORK, e);
+        }
+
+        JSONArray results = object.optJSONArray("results");
+        if (results == null) {
+            throw new TMDbException(TMDbException.Type.API);
+        }
+
+        return parseMovies(results);
+    }
+
+    @NonNull
+    private String urlFromEndpoint(String endpoint) {
+        return Constants.BASE_API_URL + endpoint;
     }
 
     @NonNull

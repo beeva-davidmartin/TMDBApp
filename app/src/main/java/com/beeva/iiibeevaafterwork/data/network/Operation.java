@@ -17,26 +17,25 @@ public class Operation {
 
     public final String body;
 
-    public static Operation newGet(String endpoint,
-                                   Map<String, String> queryParams) {
+    public static Operation newGet(String endpoint) {
+        return newGet(endpoint, null);
+    }
+
+    public static Operation newGet(String endpoint, Map<String, String> queryParams) {
         return new Operation(Type.GET,
                 endpoint,
                 queryParams,
                 null);
     }
 
-    public static Operation newPost(String endpoint,
-                                    String body) {
+    public static Operation newPost(String endpoint, String body) {
         return new Operation(Type.POST,
                 endpoint,
                 null,
                 body);
     }
 
-    private Operation(Type type,
-                      String endpoint,
-                      Map<String, String> queryParams,
-                      String body) {
+    private Operation(Type type, String endpoint, Map<String, String> queryParams, String body) {
         this.type = type;
         this.url = endpoint;
         this.queryParams = queryParams;

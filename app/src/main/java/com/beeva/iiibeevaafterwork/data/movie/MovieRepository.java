@@ -24,4 +24,9 @@ public class MovieRepository {
     public List<Movie> search(@NonNull String query) throws TMDbException {
         return movieNetworkDataSource.search(query);
     }
+
+    @NonNull
+    public List<Movie> discover() throws TMDbException {
+        return movieNetworkDataSource.discover();
+    }
 }
