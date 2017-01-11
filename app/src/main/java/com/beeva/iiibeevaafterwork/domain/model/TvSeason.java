@@ -19,9 +19,6 @@ public class TvSeason {
     public final String poster;
 
     @NonNull
-    public final Double rating;
-
-    @NonNull
     public final Integer seasonNumber;
 
     @NonNull
@@ -31,14 +28,12 @@ public class TvSeason {
                     @NonNull String name,
                     @NonNull String description,
                     @NonNull String poster,
-                    @NonNull Double rating,
                     @NonNull Integer seasonNumber,
                     @NonNull List<TvEpisode> episodes) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.poster = poster;
-        this.rating = rating;
         this.seasonNumber = seasonNumber;
         this.episodes = episodes;
     }

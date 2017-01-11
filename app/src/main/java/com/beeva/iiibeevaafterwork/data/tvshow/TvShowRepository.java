@@ -6,18 +6,23 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.beeva.iiibeevaafterwork.domain.TMDbException;
+import com.beeva.iiibeevaafterwork.domain.model.TvSeason;
 import com.beeva.iiibeevaafterwork.domain.model.TvShow;
 
 public class TvShowRepository {
 
     private final TvShowNetworkDataSource tvShowNetworkDataSource;
 
+    private TvSeasonNetworkDataSource tvSeasonNetworkDataSource;
+
     public TvShowRepository(@NonNull Context context) {
-        this(new TvShowNetworkDataSource(context));
+        this(new TvShowNetworkDataSource(context), new TvSeasonNetworkDataSource(context));
     }
 
-    TvShowRepository(TvShowNetworkDataSource tvShowNetworkDataSource) {
+    TvShowRepository(TvShowNetworkDataSource tvShowNetworkDataSource,
+                     TvSeasonNetworkDataSource tvSeasonNetworkDataSource) {
         this.tvShowNetworkDataSource = tvShowNetworkDataSource;
+        this.tvSeasonNetworkDataSource = tvSeasonNetworkDataSource;
     }
 
     @NonNull
@@ -38,5 +43,9 @@ public class TvShowRepository {
     @NonNull
     public TvShow getDetail(@NonNull Integer id) throws TMDbException {
         return tvShowNetworkDataSource.getDetail(id);
+    }
+
+    public TvSeason getSeasonDetail(Integer seasonNumber, Integer tvShowId) throws TMDbException {
+        return tvSeasonNetworkDataSource.getDetail(seasonNumber, tvShowId);
     }
 }
