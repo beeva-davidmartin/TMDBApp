@@ -45,7 +45,7 @@ public class GetPopularMoviesInteractor extends BaseInteractor {
     private void runBackground(Callback<List<Movie>> callback,
                                ErrorCallback errorCallback) {
         try {
-            List<Movie> movies = movieRepository.popular();
+            List<Movie> movies = movieRepository.getPopular();
             postSuccess(movies, callback);
         } catch (TMDbException exception) {
             postError(exception, errorCallback);

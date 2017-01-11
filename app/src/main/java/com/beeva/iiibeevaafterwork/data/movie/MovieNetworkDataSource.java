@@ -84,7 +84,7 @@ public class MovieNetworkDataSource {
     }
 
     @NonNull
-    public List<Movie> popular() throws TMDbException {
+    public List<Movie> getPopular() throws TMDbException {
         String url = urlFromEndpoint(POPULAR_URL);
 
         Operation operation = Operation.newGet(url);

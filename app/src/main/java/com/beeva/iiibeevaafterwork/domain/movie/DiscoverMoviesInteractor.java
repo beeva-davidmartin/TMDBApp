@@ -15,39 +15,37 @@ import com.beeva.iiibeevaafterwork.domain.executor.UiExecutor;
 import com.beeva.iiibeevaafterwork.domain.interactor.BaseInteractor;
 import com.beeva.iiibeevaafterwork.domain.model.Movie;
 
-public class SearchMovieInteractor extends BaseInteractor {
+public class DiscoverMoviesInteractor extends BaseInteractor {
 
     private final MovieRepository movieRepository;
 
-    public SearchMovieInteractor(@NonNull Context context) {
+    public DiscoverMoviesInteractor(@NonNull Context context) {
         this(TMDbApplication.from(context).getJobExecutor(),
                 TMDbApplication.from(context).getUiExecutor(),
                 new MovieRepository(context));
     }
 
-    SearchMovieInteractor(JobExecutor jobExecutor,
-                          UiExecutor uiExecutor,
-                          MovieRepository movieRepository) {
+    DiscoverMoviesInteractor(JobExecutor jobExecutor,
+                             UiExecutor uiExecutor,
+                             MovieRepository movieRepository) {
         super(jobExecutor, uiExecutor);
         this.movieRepository = movieRepository;
     }
 
-    public void execute(@NonNull final String query,
-                        @NonNull final Callback<List<Movie>> callback,
+    public void execute(@NonNull final Callback<List<Movie>> callback,
                         @NonNull final ErrorCallback errorCallback) {
         run(new Runnable() {
             @Override
             public void run() {
-                runBackground(query, callback, errorCallback);
+                runBackground(callback, errorCallback);
             }
         });
     }
 
-    private void runBackground(String query,
-                               Callback<List<Movie>> callback,
+    private void runBackground(Callback<List<Movie>> callback,
                                ErrorCallback errorCallback) {
         try {
-            List<Movie> movies = movieRepository.search(query);
+            List<Movie> movies = movieRepository.discover();
             postSuccess(movies, callback);
         } catch (TMDbException exception) {
             postError(exception, errorCallback);
