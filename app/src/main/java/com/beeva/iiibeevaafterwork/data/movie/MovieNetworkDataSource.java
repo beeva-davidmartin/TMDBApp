@@ -1,8 +1,11 @@
 package com.beeva.iiibeevaafterwork.data.movie;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -120,7 +123,7 @@ public class MovieNetworkDataSource {
 
         try {
             return parseMovie(object);
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             throw new TMDbException(TMDbException.Type.API, e);
         }
     }
@@ -147,7 +150,7 @@ public class MovieNetworkDataSource {
             try {
                 JSONObject movieObject = results.getJSONObject(index);
                 movies.add(parseMovie(movieObject));
-            } catch (JSONException exception) {
+            } catch (JSONException | ParseException exception) {
                 Log.w(LOG_TAG, "Failed parsing movie #" + index, exception);
             }
         }
@@ -155,11 +158,17 @@ public class MovieNetworkDataSource {
     }
 
     @NonNull
-    private Movie parseMovie(JSONObject movieObject) throws JSONException {
+    private Movie parseMovie(JSONObject movieObject) throws JSONException, ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         return new Movie(movieObject.getInt("id"),
                 movieObject.getString("title"),
                 movieObject.getString("overview"),
                 movieObject.getString("poster_path"),
-                movieObject.getDouble("vote_average"));
+                movieObject.getDouble("vote_average"),
+                movieObject.getBoolean("adult"),
+                dateFormat.parse(movieObject.getString("release_date")),
+                movieObject.getDouble("popularity"),
+                movieObject.optString("homepage"),
+                movieObject.optString("imdb_id"));
     }
 }
