@@ -5,10 +5,7 @@ import java.util.Date;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public class Movie {
-
-    @NonNull
-    public final Integer id;
+public class Movie extends Media {
 
     @NonNull
     public final String title;
@@ -44,21 +41,10 @@ public class Movie {
                  @NonNull Double voteAverage,
                  @NonNull Boolean adult,
                  @NonNull Double popularity,
-                 @Nullable Date releaseDate) {
-        this(id, title, overview, posterPath, voteAverage, adult, popularity, releaseDate, null, null);
-    }
-
-    public Movie(@NonNull Integer id,
-                 @NonNull String title,
-                 @NonNull String overview,
-                 @NonNull String posterPath,
-                 @NonNull Double voteAverage,
-                 @NonNull Boolean adult,
-                 @NonNull Double popularity,
                  @Nullable Date releaseDate,
                  @Nullable String homepage,
                  @Nullable String imdbId) {
-        this.id = id;
+        super(id);
         this.title = title;
         this.overview = overview;
         this.posterPath = posterPath;

@@ -2,10 +2,7 @@ package com.beeva.tmdbapi.domain.model;
 
 import android.support.annotation.NonNull;
 
-public class TvEpisode {
-
-    @NonNull
-    public final Integer id;
+public class TvEpisode extends Media {
 
     @NonNull
     public final String name;
@@ -20,7 +17,7 @@ public class TvEpisode {
                      @NonNull String name,
                      @NonNull String description,
                      @NonNull Double rating) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.description = description;
         this.rating = rating;

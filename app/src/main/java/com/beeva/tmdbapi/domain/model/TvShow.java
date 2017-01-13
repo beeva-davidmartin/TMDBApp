@@ -6,10 +6,7 @@ import java.util.List;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public class TvShow {
-
-    @NonNull
-    public final Integer id;
+public class TvShow extends Media {
 
     @NonNull
     public final String name;
@@ -40,7 +37,7 @@ public class TvShow {
                   @NonNull Double popularity,
                   @Nullable Date firstAirDate,
                   @Nullable List<TvSeason> seasons) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.overview = overview;
         this.posterPath = posterPath;
