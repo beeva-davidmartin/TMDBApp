@@ -1,7 +1,3 @@
-# III BEEVA Afterwork
-
-Aplicación Android que pretende introducir el desarrollo de aplicaciones en este sistema operativo.
-
 ## TMDB API
 
 Se utiliza la API v3 de [The Movie DB](https://www.themoviedb.org/) para proveer a la aplicación con información de películas y series de televisión. Actualmente se han implementado las siguientes operaciones:
