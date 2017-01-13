@@ -39,4 +39,9 @@ public class MovieRepository {
     public Movie getDetail(@NonNull Integer id) throws TMDbException {
         return movieNetworkDataSource.getDetail(id);
     }
+
+    @NonNull
+    public Boolean rate(@NonNull Integer id, @NonNull Double vote, @NonNull String guestSession) throws TMDbException {
+        return movieNetworkDataSource.rate(id, vote, guestSession);
+    }
 }

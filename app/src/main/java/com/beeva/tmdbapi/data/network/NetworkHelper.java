@@ -3,11 +3,13 @@ package com.beeva.tmdbapi.data.network;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,7 +35,7 @@ public class NetworkHelper {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public JSONObject request(@NonNull Operation operation) throws ExecutionException, InterruptedException {
+    public JSONObject request(@NonNull Operation operation) throws ExecutionException, InterruptedException, JSONException {
         Uri.Builder uriBuilder = Uri.parse(operation.url).buildUpon();
         uriBuilder.appendQueryParameter("api_key", Constants.API_KEY);
         uriBuilder.appendQueryParameter("language", Constants.API_LANGUAGE);
@@ -44,10 +46,12 @@ public class NetworkHelper {
             }
         }
 
+        JSONObject body = (!TextUtils.isEmpty(operation.body)) ? new JSONObject(operation.body) : null;
+
         RequestFuture<JSONObject> future = RequestFuture.newFuture();
         JsonObjectRequest request = new JsonObjectRequest(getMethod(operation),
                 uriBuilder.toString(),
-                null,
+                body,
                 future,
                 future);
         requestQueue.add(request);

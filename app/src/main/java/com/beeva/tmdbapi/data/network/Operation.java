@@ -28,10 +28,10 @@ public class Operation {
                 null);
     }
 
-    public static Operation newPost(String endpoint, String body) {
+    public static Operation newPost(String endpoint, Map<String, String> queryParams, String body) {
         return new Operation(Type.POST,
                 endpoint,
-                null,
+                queryParams,
                 body);
     }
 
