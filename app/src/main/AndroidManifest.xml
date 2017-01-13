@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.beeva.iiibeevaafterwork"
+<manifest package="com.beeva.tmdbapi"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".TMDbApplication"
+        android:name="com.beeva.tmdbapi.TMDbApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+
+        <activity android:name="com.beeva.tmdbapi.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
