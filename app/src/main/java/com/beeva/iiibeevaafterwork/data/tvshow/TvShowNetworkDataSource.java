@@ -1,6 +1,6 @@
 package com.beeva.iiibeevaafterwork.data.tvshow;
 
-import java.util.ArrayList;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 
 import com.beeva.iiibeevaafterwork.data.Constants;
@@ -22,8 +21,6 @@ import com.beeva.iiibeevaafterwork.domain.TMDbException;
 import com.beeva.iiibeevaafterwork.domain.model.TvShow;
 
 public class TvShowNetworkDataSource {
-
-    private static final String LOG_TAG = TvShowNetworkDataSource.class.getSimpleName();
 
     private static final String SEARCH_URL = "/search/tv";
 
@@ -63,7 +60,7 @@ public class TvShowNetworkDataSource {
             throw new TMDbException(TMDbException.Type.API);
         }
 
-        return parseTvShows(results);
+        return TvShowMapper.parseTvShows(results);
     }
 
     @NonNull
@@ -83,7 +80,7 @@ public class TvShowNetworkDataSource {
             throw new TMDbException(TMDbException.Type.API);
         }
 
-        return parseTvShows(results);
+        return TvShowMapper.parseTvShows(results);
     }
 
     @NonNull
@@ -103,7 +100,7 @@ public class TvShowNetworkDataSource {
             throw new TMDbException(TMDbException.Type.API);
         }
 
-        return parseTvShows(results);
+        return TvShowMapper.parseTvShows(results);
     }
 
     @NonNull
@@ -119,8 +116,8 @@ public class TvShowNetworkDataSource {
         }
 
         try {
-            return parseTvShow(object);
-        } catch (JSONException e) {
+            return TvShowMapper.parseTvShow(object);
+        } catch (JSONException | ParseException e) {
             throw new TMDbException(TMDbException.Type.API, e);
         }
     }
@@ -138,58 +135,5 @@ public class TvShowNetworkDataSource {
             url = url.replace(parameter.first, parameter.second);
         }
         return url;
-    }
-
-    @NonNull
-    private ArrayList<TvShow> parseTvShows(JSONArray results) {
-        ArrayList<TvShow> tvShows = new ArrayList<>();
-        for (int index = 0; index < results.length(); index++) {
-            try {
-                JSONObject tvShowObject = results.getJSONObject(index);
-                tvShows.add(parseTvShow(tvShowObject));
-            } catch (JSONException exception) {
-                Log.w(LOG_TAG, "Failed parsing TV show #" + index, exception);
-            }
-        }
-        return tvShows;
-    }
-
-    @NonNull
-    private TvShow parseTvShow(JSONObject tvShowObject) throws JSONException {
-        JSONArray seasonsArray = tvShowObject.optJSONArray("seasons");
-        List<TvShow.Season> seasons;
-        if (seasonsArray != null) {
-            seasons = parseTvShowSeasons(seasonsArray);
-        } else {
-            seasons = null;
-        }
-
-        return new TvShow(tvShowObject.getInt("id"),
-                tvShowObject.getString("name"),
-                tvShowObject.getString("overview"),
-                tvShowObject.getString("poster_path"),
-                tvShowObject.getDouble("vote_average"),
-                seasons);
-    }
-
-    @NonNull
-    private List<TvShow.Season> parseTvShowSeasons(JSONArray seasonsArray) throws JSONException {
-        ArrayList<TvShow.Season> seasons = new ArrayList<>();
-        for (int index = 0; index < seasonsArray.length(); index++) {
-            try {
-                JSONObject seasonObject = seasonsArray.getJSONObject(index);
-                seasons.add(parseTvShowSeason(seasonObject));
-            } catch (JSONException exception) {
-                Log.w(LOG_TAG, "Failed parsing TV show #" + index, exception);
-            }
-        }
-        return seasons;
-    }
-
-    private TvShow.Season parseTvShowSeason(JSONObject seasonObject) throws JSONException {
-        return new TvShow.Season(seasonObject.getInt("id"),
-                seasonObject.getInt("season_number"),
-                seasonObject.getInt("episode_count"),
-                seasonObject.getString("poster_path"));
     }
 }

@@ -26,10 +26,10 @@ public class Movie {
     public final Boolean adult;
 
     @NonNull
-    public final Date releaseDate;
-
-    @NonNull
     public final Double popularity;
+
+    @Nullable
+    public final Date releaseDate;
 
     @Nullable
     public String homepage;
@@ -43,9 +43,9 @@ public class Movie {
                  @NonNull String posterPath,
                  @NonNull Double voteAverage,
                  @NonNull Boolean adult,
-                 @NonNull Date releaseDate,
-                 @NonNull Double popularity) {
-        this(id, title, overview, posterPath, voteAverage, adult, releaseDate, popularity, null, null);
+                 @NonNull Double popularity,
+                 @Nullable Date releaseDate) {
+        this(id, title, overview, posterPath, voteAverage, adult, popularity, releaseDate, null, null);
     }
 
     public Movie(@NonNull Integer id,
@@ -54,8 +54,8 @@ public class Movie {
                  @NonNull String posterPath,
                  @NonNull Double voteAverage,
                  @NonNull Boolean adult,
-                 @NonNull Date releaseDate,
                  @NonNull Double popularity,
+                 @Nullable Date releaseDate,
                  @Nullable String homepage,
                  @Nullable String imdbId) {
         this.id = id;

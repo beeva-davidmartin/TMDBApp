@@ -1,5 +1,6 @@
 package com.beeva.iiibeevaafterwork.domain.model;
 
+import java.util.Date;
 import java.util.List;
 
 import android.support.annotation.NonNull;
@@ -14,53 +15,38 @@ public class TvShow {
     public final String name;
 
     @NonNull
-    public final String description;
+    public final String overview;
 
     @NonNull
-    public final String poster;
+    public final String posterPath;
 
     @NonNull
-    public final Double rating;
+    public final Double voteAverage;
+
+    @NonNull
+    public final Double popularity;
 
     @Nullable
-    public final List<Season> seasons;
+    public final Date firstAirDate;
+
+    @Nullable
+    public final List<TvSeason> seasons;
 
     public TvShow(@NonNull Integer id,
                   @NonNull String name,
-                  @NonNull String description,
-                  @NonNull String poster,
-                  @NonNull Double rating,
-                  @Nullable List<Season> seasons) {
+                  @NonNull String overview,
+                  @NonNull String posterPath,
+                  @NonNull Double voteAverage,
+                  @NonNull Double popularity,
+                  @Nullable Date firstAirDate,
+                  @Nullable List<TvSeason> seasons) {
         this.id = id;
         this.name = name;
-        this.description = description;
-        this.poster = poster;
-        this.rating = rating;
+        this.overview = overview;
+        this.posterPath = posterPath;
+        this.voteAverage = voteAverage;
+        this.popularity = popularity;
+        this.firstAirDate = firstAirDate;
         this.seasons = seasons;
-    }
-
-    public static class Season {
-
-        @NonNull
-        public final Integer id;
-
-        @NonNull
-        public final Integer seasonNumber;
-
-        @NonNull
-        public final Integer numOfEpisodies;
-
-        @NonNull
-        public final String poster;
-
-        public Season(@NonNull Integer id,
-                      @NonNull Integer seasonNumber,
-                      @NonNull Integer numOfEpisodies,
-                      @NonNull String poster) {
-            this.id = id;
-            this.seasonNumber = seasonNumber;
-            this.numOfEpisodies = numOfEpisodies;
-            this.poster = poster;
-        }
     }
 }

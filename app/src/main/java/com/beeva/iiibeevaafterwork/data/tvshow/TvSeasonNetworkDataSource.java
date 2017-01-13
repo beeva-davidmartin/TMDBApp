@@ -1,22 +1,16 @@
 package com.beeva.iiibeevaafterwork.data.tvshow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 
 import com.beeva.iiibeevaafterwork.data.Constants;
 import com.beeva.iiibeevaafterwork.data.network.NetworkHelper;
 import com.beeva.iiibeevaafterwork.data.network.Operation;
 import com.beeva.iiibeevaafterwork.domain.TMDbException;
-import com.beeva.iiibeevaafterwork.domain.model.TvEpisode;
 import com.beeva.iiibeevaafterwork.domain.model.TvSeason;
 
 public class TvSeasonNetworkDataSource {
@@ -50,7 +44,7 @@ public class TvSeasonNetworkDataSource {
         }
 
         try {
-            return parseTvSeason(object);
+            return TvShowMapper.parseTvSeason(object);
         } catch (JSONException e) {
             throw new TMDbException(TMDbException.Type.API, e);
         }
@@ -69,39 +63,5 @@ public class TvSeasonNetworkDataSource {
             url = url.replace(parameter.first, parameter.second);
         }
         return url;
-    }
-
-    @NonNull
-    private TvSeason parseTvSeason(JSONObject tvSeasonObject) throws JSONException {
-        JSONArray episodesArray = tvSeasonObject.getJSONArray("episodes");
-        List<TvEpisode> episodes = parseTvEpisodes(episodesArray);
-
-        return new TvSeason(tvSeasonObject.getInt("id"),
-                tvSeasonObject.getString("name"),
-                tvSeasonObject.getString("overview"),
-                tvSeasonObject.getString("poster_path"),
-                tvSeasonObject.getInt("season_number"),
-                episodes);
-    }
-
-    @NonNull
-    private List<TvEpisode> parseTvEpisodes(JSONArray episodesArray) throws JSONException {
-        ArrayList<TvEpisode> episodes = new ArrayList<>();
-        for (int index = 0; index < episodesArray.length(); index++) {
-            try {
-                JSONObject episodeObject = episodesArray.getJSONObject(index);
-                episodes.add(parseTvEpisode(episodeObject));
-            } catch (JSONException exception) {
-                Log.w(LOG_TAG, "Failed parsing TV episode #" + index, exception);
-            }
-        }
-        return episodes;
-    }
-
-    private TvEpisode parseTvEpisode(JSONObject episodeObject) throws JSONException {
-        return new TvEpisode(episodeObject.getInt("id"),
-                episodeObject.getString("name"),
-                episodeObject.getString("overview"),
-                episodeObject.getDouble("vote_average"));
     }
 }
