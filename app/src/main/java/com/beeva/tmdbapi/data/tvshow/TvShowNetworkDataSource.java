@@ -30,6 +30,8 @@ public class TvShowNetworkDataSource {
 
     private static final String DETAIL_URL = "/tv/{tv_id}";
 
+    private static final String RATE_URL = "/tv/{tv_id}/rating";
+
     private final NetworkHelper networkHelper;
 
     public TvShowNetworkDataSource(@NonNull Context context) {
@@ -118,6 +120,29 @@ public class TvShowNetworkDataSource {
         try {
             return TvShowMapper.parseTvShow(object);
         } catch (JSONException | ParseException e) {
+            throw new TMDbException(TMDbException.Type.API, e);
+        }
+    }
+
+    @NonNull
+    public Boolean rate(@NonNull Integer id, @NonNull Double vote, @NonNull final String guestSession) throws TMDbException {
+        String url = urlFromEndpoint(RATE_URL, Pair.create("{tv_id}", id.toString()));
+        Map<String, String> queryParams = new HashMap<String, String>() {{
+            put("guest_session_id", Uri.encode(guestSession));
+        }};
+
+        Operation operation = Operation.newPost(url, queryParams, "{\"value\":" + vote + "}");
+        JSONObject object;
+        try {
+            object = networkHelper.request(operation);
+        } catch (Exception e) {
+            throw new TMDbException(TMDbException.Type.NETWORK, e);
+        }
+
+        try {
+            int statusCode = object.getInt("status_code");
+            return statusCode == 1 || statusCode == 12;
+        } catch (JSONException e) {
             throw new TMDbException(TMDbException.Type.API, e);
         }
     }

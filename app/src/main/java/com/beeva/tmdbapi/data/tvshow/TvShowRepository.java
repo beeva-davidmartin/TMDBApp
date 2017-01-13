@@ -48,4 +48,9 @@ public class TvShowRepository {
     public TvSeason getSeasonDetail(Integer seasonNumber, Integer tvShowId) throws TMDbException {
         return tvSeasonNetworkDataSource.getDetail(seasonNumber, tvShowId);
     }
+
+    @NonNull
+    public Boolean rate(@NonNull Integer id, @NonNull Double vote, @NonNull String guestSession) throws TMDbException {
+        return tvShowNetworkDataSource.rate(id, vote, guestSession);
+    }
 }
